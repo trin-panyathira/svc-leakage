@@ -9,6 +9,8 @@ Spring Boot 3.3.14 microservice serving the leakage workflow APIs.
 
 ## Build Docker
 docker build -t svc-leakage .
+docker tag svc-leakage:latest trinisdocker/svc-leakage:latest
+docker push trinisdocker/svc-leakage:latest
 
 ## Endpoints
 - POST `/api/requests` (maker)
