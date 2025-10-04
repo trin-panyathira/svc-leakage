@@ -7,6 +7,9 @@ Spring Boot 3.3.14 microservice serving the leakage workflow APIs.
 - Run: `mvn -q spring-boot:run`
 - Jar: `java -jar target/svc-leakage-0.0.1-SNAPSHOT.jar`
 
+## Build Docker
+docker build -t svc-leakage .
+
 ## Endpoints
 - POST `/api/requests` (maker)
 - GET `/api/requests/pending` (approver, super_approver)
