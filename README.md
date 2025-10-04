@@ -14,6 +14,7 @@ Spring Boot 3.3.14 microservice serving the leakage workflow APIs.
 - POST `/api/requests/{id}/reject` (role-based)
 - POST `/api/requests/{id}/escalate` (approver only)
 - GET `/api/requests/history` (all roles)
+- POST `/api/requests/{id}/send-email` (maker)
 
 Headers required:
 - `x-user-id`: user identifier
