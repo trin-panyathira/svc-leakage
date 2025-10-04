@@ -91,4 +91,16 @@ public class RequestController {
 		if (!"maker".equals(role)) return ResponseEntity.status(403).build();
 		return ResponseEntity.ok(service.createLeakageRequest(dto, userId));
 	}
+
+	@PostMapping("/{id}/send-email")
+	public ResponseEntity<Request> sendEmail(
+			@RequestHeader("x-user-id") String userId,
+			@RequestHeader("x-user-role") String role,
+			@PathVariable long id) {
+		try {
+			return ResponseEntity.ok(service.sendEmailToOperation(id, userId, role));
+		} catch (IllegalStateException e) {
+			return ResponseEntity.status(400).body(null);
+		}
+	}
 } 

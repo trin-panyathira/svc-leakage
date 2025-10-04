@@ -136,6 +136,24 @@ public class RequestService {
 		return r;
 	}
 
+	public Request sendEmailToOperation(long id, String actorId, String role) {
+		Request r = mustFind(id);
+		if (!"maker".equals(role)) {
+			throw new IllegalStateException("Only maker can send email");
+		}
+		if (r.getStatus() != RequestStatus.APPROVED) {
+			throw new IllegalStateException("Can only send email for approved requests");
+		}
+		boolean alreadySent = r.getActions().stream().anyMatch(a -> "SEND_EMAIL".equals(a.getType()));
+		if (alreadySent) {
+			throw new IllegalStateException("Email already sent for this request");
+		}
+		// Mock sending email to mock.operationteam.leakage@xxxxx.com
+		String note = "Mock email sent to mock.operationteam.leakage@xxxxx.com";
+		r.getActions().add(new Action(java.time.Instant.now(), actorId, "SEND_EMAIL", note));
+		return r;
+	}
+
 	private Request mustFind(long id) {
 		Request r = storage.get(id);
 		if (r == null) throw new IllegalArgumentException("Request not found: " + id);
