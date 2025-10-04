@@ -116,9 +116,22 @@ public class RequestService {
 			dto.getRequestNewLoanRate3rd()
 		));
 		r.setMakerId(makerId);
-		r.setStatus(RequestStatus.PENDING_APPROVER);
-		r.setCreatedAt(Instant.now());
-		r.getActions().add(new Action(Instant.now(), makerId, "CREATE_LEAKAGE", null));
+
+		// Auto-approve logic
+		boolean autoApprove = dto.getRequestNewLoanRate1st() >= dto.getUserInfo().getCurrentLoanRate1st() - 0.5 &&
+			dto.getRequestNewLoanRate2nd() >= dto.getUserInfo().getCurrentLoanRate2nd() - 0.5 &&
+			dto.getRequestNewLoanRate3rd() >= dto.getUserInfo().getCurrentLoanRate3rd() - 0.5;
+
+		if (autoApprove) {
+			r.setStatus(RequestStatus.APPROVED);
+			r.setCreatedAt(Instant.now());
+			r.getActions().add(new Action(Instant.now(), makerId, "CREATE_LEAKAGE", "Auto-approved: all new rates < current - 0.5%"));
+			r.getActions().add(new Action(Instant.now(), makerId, "APPROVE", "Auto-approved by system"));
+		} else {
+			r.setStatus(RequestStatus.PENDING_APPROVER);
+			r.setCreatedAt(Instant.now());
+			r.getActions().add(new Action(Instant.now(), makerId, "CREATE_LEAKAGE", null));
+		}
 		storage.put(r.getId(), r);
 		return r;
 	}
